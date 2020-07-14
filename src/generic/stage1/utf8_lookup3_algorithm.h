@@ -77,7 +77,7 @@ namespace utf8_validation {
   // 3 4-bit table lookups, identifying which errors that 4 bits could match, and then &'s them together.
   // If all 3 lookups detect the same error, it's an error.
   //
-  really_inline simd8<uint8_t> check_special_cases(const simd8<uint8_t> input, const simd8<uint8_t> prev1) {
+  really_inline simd8<uint8_t> check_special_cases(const simd8<uint8_t>& input, const simd8<uint8_t>& prev1) {
     //
     // These are the errors we're going to match for bytes 1-2, by looking at the first three
     // nibbles of the character: <high bits of byte 1>> & <low bits of byte 1> & <high bits of byte 2>
@@ -152,7 +152,7 @@ namespace utf8_validation {
   }
 
   really_inline simd8<uint8_t> check_multibyte_lengths(const simd8<uint8_t>& input, const simd8<uint8_t>& prev_input,
-      simd8<uint8_t> prev1) {
+      simd8<uint8_t>& prev1) {
     simd8<uint8_t> prev2 = input.prev<2>(prev_input);
     simd8<uint8_t> prev3 = input.prev<3>(prev_input);
     // is_2_3_continuation uses one more instruction than lookup2
