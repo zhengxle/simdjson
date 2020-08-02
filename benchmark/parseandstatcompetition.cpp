@@ -135,8 +135,12 @@ static void GenStatPlus(Stat &stat, const dom::element v) {
   switch (v.type()) {
   case dom::element_type::ARRAY:
     for (dom::element child : dom::array(v)) {
-      GenStatPlus(stat, child);
-      stat.elementCount++;
+      if(child.is_int64() || child.is_uint64() || child.is_double()) {
+        stat.numberCount++;
+      } else {
+        GenStatPlus(stat, child);
+        stat.elementCount++;
+      }
     }
     stat.arrayCount++;
     break;
