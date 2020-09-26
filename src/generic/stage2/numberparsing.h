@@ -134,6 +134,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // 1.
   const uint32_t index = 2 * uint32_t(power - smallest_power);
   value128 firstproduct = full_multiplication(i, power_of_five_128[index]);
+
   // Unless the least significant 9 bits of the high (64-bit) part of the full
   // product are all 1s, then we know that the most significant 54 bits are
   // exact and no further work is needed.
@@ -165,9 +166,11 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // If we have lots of trailing zeros, we may fall right between two
   // floating-point values.
   // We have 5**27 < 2**64 and it is the largest power of 5 to do so.
-  if (simdjson_unlikely((lower == 0) && (power >= -27) && (power <= 27) && ((upper & 0x1FF) == 0) &&
+  if (simdjson_unlikely((lower == 0) && (power >= -27) && (power <= 27)  &&
                ((mantissa & 3) == 1))) {
+    if((mantissa  << (upperbit + 64 - 53 - 2)) ==  upper) {
       mantissa ^= 1;             // flip it so that we do not round up
+    }
   }
 
   mantissa += mantissa & 1;
